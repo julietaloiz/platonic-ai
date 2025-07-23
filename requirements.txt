@@ -1,0 +1,19 @@
+# Core dependencies
+streamlit
+langchain
+openai
+
+# Voice input (ASR)
+faster-whisper  # For speech-to-text
+pyaudio         # For microphone input (may require portaudio to be installed)
+
+# Voice output (TTS)
+TTS[all]        # Coqui TTS for text-to-speech
+simpleaudio     # For audio playback
+
+# Summary export
+fpdf            # For PDF generation
+
+# Optional/future tools
+# pdfkit         # Alternative for PDF export (requires wkhtmltopdf)
+# streamlit-download-button  # For file downloads in Streamlit (if needed)
