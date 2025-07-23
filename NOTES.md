@@ -143,8 +143,8 @@ It uses Socratic questioning to guide users, encouraging deeper reflection and u
 
 | # | Task | Est. Time | Notes | Done |
 |---| --- | --- | --- | --- |
-| 1 | Setup Project Environment in Cursor + GitHub Repo | 30 min | Create repo, virtualenv, requirements, gitignore, basic folder structure |  |
-| 2 | Create rough draft file | 2 hrs | Create a py file or jupyter notebook POC with bare minimum funcitonality (e.g. prompt, question, answer, question, turn taking). It should connect tot he right apis and be interative in the console. This can be then used to split functionalities into the right scripts. | |
+| 1 | Setup Project Environment in Cursor + GitHub Repo | 30 min | Create repo, virtualenv, requirements, gitignore, basic folder structure | x |
+| 2 | Create rough draft file | 2 hrs | Create a py file or jupyter notebook POC with bare minimum funcitonality (e.g. prompt, question, answer, question, turn taking). It should connect tot he right apis and be interative in the console. This can be then used to split functionalities into the right scripts. | x |
 | 3 | Implement Basic LangChain Socratic Agent | 3 hrs | LangChain chain with conversational memory, prompt engineering, question-only responses |  |
 | 4 | Build Text-Based UI (Streamlit or Gradio) | 2 hrs | Chat interface, message display, input box, “Surprise Me” button placeholder |  |
 | 5 | Starter Questions List + Integration | 30 min | Prepare ~20 philosophical questions, add random topic picker functionality |  |

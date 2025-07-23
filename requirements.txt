@@ -1,6 +1,7 @@
 # Core dependencies
 streamlit
 langchain
+langchain_openai 
 openai
 
 # Voice input (ASR)
@@ -17,3 +18,6 @@ fpdf            # For PDF generation
 # Optional/future tools
 # pdfkit         # Alternative for PDF export (requires wkhtmltopdf)
 # streamlit-download-button  # For file downloads in Streamlit (if needed)
+
+# API keys
+python-dotenv
