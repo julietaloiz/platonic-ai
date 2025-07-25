@@ -2,70 +2,90 @@
 Platonic: No easy answers. Just questions.
 
 This is a simple Streamlit app that allows you to chat with a Platonic agent.
+
+Example usage:
+
+```
+streamlit run app/main.py
+```
 """
 
 import streamlit as st
 from app.agent import SocraticAgent
-from app.prompts import GOODBYE_MESSAGE
-from app.config import USER_MESSAGE_LIMIT
+from app.ui_utils import (
+    render_title_and_tagline,
+    render_chat_history,
+    render_welcome_message,
+    get_placeholder_text,
+    user_input_form,
+    handle_agent_response,
+    USER_MESSAGE_LIMIT,
+    load_branding,
+    apply_branding,
+    apply_layout_styles,
+    add_tutor_message_to_history,
+)
+from app.prompts import GOODBYE_MESSAGE, WELCOME_MESSAGE
 
-# Initialise the Socratic agent (one per session)
+# SETUP UI
+apply_layout_styles()
+apply_branding(load_branding("minimal"))
+render_title_and_tagline()
+
+# SETUP AGENT
 if "agent" not in st.session_state:
     st.session_state.agent = SocraticAgent(session_id="streamlit-session")
-# Initialise chat history in session state
 if "history" not in st.session_state:
-    st.session_state.history = []  # List of (role, content) tuples
+    st.session_state.history = []
+if "pending_tutor_reply" not in st.session_state:
+    st.session_state.pending_tutor_reply = False
 
-st.title("Platonic")
-# Add tagline just below the title
-st.markdown(
-    "<span style='font-size:1.2em; color:gray;'>No easy answers. Just questions.</span>",
-    unsafe_allow_html=True,
+# Ensure the conversation starts with a Platonic prompt
+if not st.session_state.history:
+    st.session_state.history.append(("tutor", WELCOME_MESSAGE))
+
+user_message_count = sum(1 for role, _ in st.session_state.history if role == "user")
+input_disabled = user_message_count >= USER_MESSAGE_LIMIT
+placeholder_text = (
+    "Type your question or topic:" if user_message_count == 0 else "Your answer"
 )
 
-# If conversation is empty, start with a Platonic prompt
-if not st.session_state.history:
-    st.session_state.history.append(
-        ("tutor", "Welcome! What topic or question would you like to explore today?")
-    )
+# Always render chat history first (so it appears above the input box)
+render_chat_history(st.session_state.history)
 
-# Count user messages in the session
-user_message_count = sum(1 for role, _ in st.session_state.history if role == "user")
+# Show input form only if under the message limit and not waiting for a tutor reply
+if not input_disabled and not st.session_state.pending_tutor_reply:
+    with st.form(key="chat_form", clear_on_submit=True):
+        user_input = st.text_input(
+            "Your message",
+            placeholder=placeholder_text,
+            key="user_input",
+            disabled=input_disabled,
+        )
+        submitted = st.form_submit_button("Send", disabled=input_disabled)
+        if submitted and user_input.strip():
+            st.session_state.history.append(("user", user_input))
+            st.session_state.pending_tutor_reply = True
+            st.rerun()
+    # Add a placeholder Surprise Me button below the input form
+    if st.button("Surprise Me", disabled=input_disabled):
+        # Placeholder: add a fixed surprise question (replace with random later)
+        st.session_state.history.append(
+            ("user", "What is the meaning of life? (Surprise Me)")
+        )
+        st.session_state.pending_tutor_reply = True
+        st.rerun()
 
-
-# Display chat history in a chat-style format (oldest at top, newest at bottom)
-st.markdown("#### Conversation")
-for role, content in st.session_state.history:
-    if role == "user":
-        st.markdown(f"**You:** {content}")
-    else:
-        st.markdown(f"**Platonic:** {content}")
-
-# Place the user input form at the bottom of the conversation
-input_disabled = user_message_count >= USER_MESSAGE_LIMIT
-with st.form(key="chat_form", clear_on_submit=True):
-    user_input = st.text_input(
-        "Type your question or topic:", key="user_input", disabled=input_disabled
-    )
-    submitted = st.form_submit_button("Send", disabled=input_disabled)
-    if submitted and user_input.strip() and not input_disabled:
-        st.session_state.history.append(("user", user_input))
-
-# After displaying, check if the last message is from the user
-if st.session_state.history:
-    last_role, last_content = st.session_state.history[-1]
-    # If the last message is from the user, generate and stream the agent's response
-    if last_role == "user" and user_message_count <= USER_MESSAGE_LIMIT:
-        response_placeholder = st.empty()  # Placeholder for streaming response
-        response_text = ""
-        # Stream the agent's response token by token
-        for token in st.session_state.agent.ask_stream(last_content):
-            response_text += token
-            response_placeholder.markdown(f"**Platonic:** {response_text}")
-        # Add the full response to the conversation history
-        st.session_state.history.append(("tutor", response_text))
-        st.rerun()  # Rerun to update the UI and await next user input
-    # If the user has hit the message limit, show the goodbye message
-    elif last_role == "user" and user_message_count > USER_MESSAGE_LIMIT:
-        st.session_state.history.append(("tutor", GOODBYE_MESSAGE))
+# Tutor reply logic (runs after user message is added)
+if st.session_state.pending_tutor_reply:
+    if user_message_count < USER_MESSAGE_LIMIT:
+        add_tutor_message_to_history(
+            st.session_state.agent, st.session_state.history[-1][1]
+        )
+        st.session_state.pending_tutor_reply = False
+        st.rerun()
+    elif user_message_count == USER_MESSAGE_LIMIT:
+        if st.session_state.history[-1][1] != GOODBYE_MESSAGE:
+            st.session_state.history.append(("tutor", GOODBYE_MESSAGE))
+        st.session_state.pending_tutor_reply = False
         st.rerun()

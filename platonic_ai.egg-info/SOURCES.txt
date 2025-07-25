@@ -1,0 +1,16 @@
+LICENSE
+README.md
+setup.py
+app/__init__.py
+app/agent.py
+app/draft_agent.py
+app/main.py
+app/prompts.py
+app/starter_questions.py
+app/ui_utils.py
+platonic_ai.egg-info/PKG-INFO
+platonic_ai.egg-info/SOURCES.txt
+platonic_ai.egg-info/dependency_links.txt
+platonic_ai.egg-info/top_level.txt
+tests/test_agent.py
+tests/test_ui.py

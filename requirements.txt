@@ -1,6 +1,7 @@
 # Utilities
 pytest
 python-dotenv
+setuptools
 
 # Core dependencies
 streamlit
