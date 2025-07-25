@@ -4,7 +4,7 @@ import os
 from app.prompts import GOODBYE_MESSAGE
 from app.agent import SocraticAgent
 
-USER_MESSAGE_LIMIT = 5
+USER_MESSAGE_LIMIT = 6
 
 ASSETS_DIR = os.path.join(os.path.dirname(__file__), "../assets")
 

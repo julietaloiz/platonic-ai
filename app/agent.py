@@ -42,7 +42,7 @@ class SocraticAgent:
             raise ValueError("OpenAI API key not found. Please check your .env file.")
 
         # Set up the LLM and Socratic prompt
-        self.model = ChatOpenAI(model=model_name)
+        self.model = ChatOpenAI(model=model_name, temperature=0.7)
         self.prompt = ChatPromptTemplate.from_messages(
             [
                 ("system", SYSTEM_PROMPT),

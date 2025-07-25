@@ -146,9 +146,9 @@ It uses Socratic questioning to guide users, encouraging deeper reflection and u
 | 1 | Setup Project Environment in Cursor + GitHub Repo | 30 min | Create repo, virtualenv, requirements, gitignore, basic folder structure | x |
 | 2 | Create rough draft file | 2 hrs | Create a py file or jupyter notebook POC with bare minimum funcitonality (e.g. prompt, question, answer, question, turn taking). It should connect tot he right apis and be interative in the console. This can be then used to split functionalities into the right scripts. | x |
 | 3 | Implement Basic LangChain Socratic Agent | 1 hr | LangChain chain with conversational memory, prompt engineering, question-only responses | x |
-| 4 | Build Text-Based UI (Streamlit) | 2 hrs | Chat interface, message display, input box, “Surprise Me” button placeholder | x |
-| 5 | Starter Questions List + Integration | 30 min | Prepare ~20 philosophical questions, add random topic picker functionality |  |
-| 6 | Running Summary Box Using LLM Summarisation | 1 hr | Summarise conversation every 2–3 turns, display on sidebar or below chat |  |
+| 4 | Build Text-Based UI (Streamlit) | 4 hrs | Chat interface, message display, input box, “Surprise Me” button placeholder | x |
+| 5 | Starter Questions List + Integration | 10 min | Prepare ~20 philosophical questions, add random topic picker functionality | x |
+| 6 | Running Summary Box Using LLM Summarisation | 1 hr | Summarise conversation every 2–3 turns, display on sidebar or below chat | x |
 | 7 | Design and Implement Branding | 3 hrs | Choose colour palette, select fonts, design simple logo using Canva/Hatchful, store assets in repo |  |
 | 8 | Integrate Branding Into UI | 1 hr | Apply colours, fonts, logo; add CSS styles in Streamlit |  |
 | 9 | **Testing:** Functional tests for all above features (agent responses, UI updates, summary updates, random questions, branding consistency) | 2 hrs | Write manual test checklist; verify no crashes; test edge cases |  |

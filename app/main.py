@@ -26,25 +26,44 @@ from app.ui_utils import (
     add_tutor_message_to_history,
 )
 from app.prompts import GOODBYE_MESSAGE, WELCOME_MESSAGE
+from app.starter_questions import get_random_starter_question
+from app.summariser import summarise_convo
 
 # SETUP UI
 apply_layout_styles()
 apply_branding(load_branding("minimal"))
 render_title_and_tagline()
 
-# SETUP AGENT
+# SETUP SESSION
 if "agent" not in st.session_state:
     st.session_state.agent = SocraticAgent(session_id="streamlit-session")
 if "history" not in st.session_state:
     st.session_state.history = []
 if "pending_tutor_reply" not in st.session_state:
     st.session_state.pending_tutor_reply = False
+if "summary" not in st.session_state:
+    st.session_state.summary = ""
+if "last_summarised_count" not in st.session_state:
+    st.session_state.last_summarised_count = 0
 
 # Ensure the conversation starts with a Platonic prompt
 if not st.session_state.history:
     st.session_state.history.append(("tutor", WELCOME_MESSAGE))
 
 user_message_count = sum(1 for role, _ in st.session_state.history if role == "user")
+if (
+    user_message_count > 0
+    and user_message_count % 3 == 0
+    and st.session_state.last_summarised_count != user_message_count
+):
+    st.session_state.summary = summarise_convo(st.session_state.history)
+    st.session_state.last_summarised_count = user_message_count
+
+st.sidebar.markdown("### Conversation Summary")
+st.sidebar.write(
+    st.session_state.summary or "Summary will appear here after a few turns."
+)
+
 input_disabled = user_message_count >= USER_MESSAGE_LIMIT
 placeholder_text = (
     "Type your question or topic:" if user_message_count == 0 else "Your answer"
@@ -67,12 +86,11 @@ if not input_disabled and not st.session_state.pending_tutor_reply:
             st.session_state.history.append(("user", user_input))
             st.session_state.pending_tutor_reply = True
             st.rerun()
-    # Add a placeholder Surprise Me button below the input form
+    # Add a Surprise Me button below the input form
     if st.button("Surprise Me", disabled=input_disabled):
-        # Placeholder: add a fixed surprise question (replace with random later)
-        st.session_state.history.append(
-            ("user", "What is the meaning of life? (Surprise Me)")
-        )
+        # Use a real random starter question
+        surprise_question = get_random_starter_question()
+        st.session_state.history.append(("user", f"{surprise_question} (Surprise Me)"))
         st.session_state.pending_tutor_reply = True
         st.rerun()
 
